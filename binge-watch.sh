@@ -1,6 +1,13 @@
 #!/bin/bash
 
 LIST_FILE_NAME="binge_list.txt"
+USAGE="$(basename "$0") [ file_list ] -- program to track and autorun your series
+program can be run without arguments to resume next episode from the $LIST_FILE_NAME
+
+where:
+    file_list - a list of files to watch. Will create $LIST_FILE_NAME to store watching progress. 
+      List can be created by calling script with *.{file_extension}
+"
 
 # Generate a list of films to watch using input arguments
 if [[ $# -ne 0 ]]; then
@@ -10,10 +17,18 @@ if [[ $# -ne 0 ]]; then
 fi
 
 while true; do
+
+  #Check if script was run correctly
+  if [[ ! -f "./$LIST_FILE_NAME" ]]; then
+    printf "Script did not find $LIST_FILE_NAME in current folder. Did you forget to provide list of files to watch?\n\n"
+    echo "$USAGE"
+    exit 1
+  fi
+
   TO_WATCH=$(head -n 1 $LIST_FILE_NAME)
 
   #Panic exit at empty line
-  if [ -z $TO_WATCH ]; then
+  if [ -z "$TO_WATCH" ]; then
     echo "File $LIST_FILE_NAME is empty, looks like you finished :("
     exit 0
   fi
@@ -26,7 +41,7 @@ while true; do
   echo
 
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    sed -i "/$TO_WATCH/d" $LIST_FILE_NAME
+    sed -i "1d" $LIST_FILE_NAME
   else
     exit 0
   fi
