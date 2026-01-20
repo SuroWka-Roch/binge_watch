@@ -9,6 +9,8 @@ where:
       List can be created by calling script with *.{file_extension}
 "
 
+VLC_FLAGS="-f --play-and-exit"
+
 # Generate a list of films to watch using input arguments
 if [[ $# -ne 0 ]]; then
   for var in "$@"; do
@@ -34,7 +36,8 @@ while true; do
   fi
 
   echo "Starting $TO_WATCH"
-  vlc "$TO_WATCH" &>/dev/null
+  vlc $VLC_FLAGS "$TO_WATCH" &>/dev/null
+
 
   echo "Are you done watching $TO_WATCH?"
   read -p " \"y\" or \"n\"." -n 1 -r
